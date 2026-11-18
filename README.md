@@ -4,7 +4,7 @@ A lightweight, stateless REST API built with **Python**, **FastAPI**, and **Dock
 
 The project demonstrates API development, containerization, automated testing, and cloud deployment practices using AWS.
 
-> **Project Status:** Docker implementation completed and tested locally. AWS deployment in progress.
+> **Project Status:** Docker implementation completed and tested locally. Container image successfully published to Amazon ECR. AWS ECS Fargate deployment in progress.
 
 ## Tech Stack
 
@@ -14,8 +14,8 @@ The project demonstrates API development, containerization, automated testing, a
 - **QRCode & Pillow** – QR code generation
 - **Docker** – Application containerization
 - **Pytest** – Automated testing
-- **AWS ECR** – Container image registry (in progress)
-- **AWS ECS & Fargate** – Cloud container deployment (planned)
+- **AWS ECR** – Container image registry (completed)
+- **AWS ECS & Fargate** – Cloud container deployment (in progress)
 
 ## Features
 
@@ -203,25 +203,64 @@ pytest -q
 
 ## AWS Deployment
 
-The cloud deployment is currently in progress.
-
-The planned architecture uses:
-
-- **Amazon ECR** to store Docker container images.
-- **Amazon ECS** to manage container deployment.
-- **AWS Fargate** to execute containers without managing servers.
-- **Amazon CloudWatch** for application logging and monitoring.
+The application is being deployed on Amazon Web Services (AWS) using container-based infrastructure.
 
 **AWS Region:** Europe (Spain) – `eu-south-2`
 
-Deployment instructions and verification screenshots will be added once the AWS deployment is completed.
+### Amazon ECR – Container Registry
+
+The Docker image has been successfully pushed to Amazon Elastic Container Registry (ECR).
+
+Amazon ECR provides a private registry for storing and managing container images.
+
+**Repository Configuration:**
+
+- **Repository Name:** `qr-code-generator-api`
+- **Repository Type:** Private
+- **AWS Region:** `eu-south-2`
+- **Image Tag:** `latest`
+
+#### Docker Image Publication
+
+The deployment process includes:
+
+1. Building the Docker image locally.
+2. Authenticating Docker with Amazon ECR.
+3. Tagging the image for the ECR repository.
+4. Pushing the image to AWS.
+5. Verifying the image in the Amazon ECR console.
+
+#### Amazon ECR Evidence
+
+The following screenshot confirms that the Docker image has been successfully uploaded to Amazon ECR.
+
+![Amazon ECR Repository](docs/ecr-image.png)
+
+### Amazon ECS & AWS Fargate
+
+**Status:** In progress.
+
+The next phase involves deploying the containerized FastAPI application using Amazon ECS with AWS Fargate.
+
+The planned deployment will include:
+
+- An Amazon ECS cluster.
+- A Fargate task definition.
+- Container configuration.
+- Network and security group configuration.
+- Application health checks.
+- Amazon CloudWatch logging.
+- Public API accessibility for testing.
+
+Deployment instructions and screenshots will be added after completing this phase.
 
 ## Future Improvements
 
-- Deploy the application on AWS ECS with Fargate.
+- Complete AWS ECS deployment with Fargate.
 - Implement Infrastructure as Code using Terraform.
 - Deploy the application locally using Kubernetes.
 - Configure a CI/CD pipeline with GitHub Actions.
+- Implement automated Docker image builds and deployment workflows.
 
 ## License
 
