@@ -166,13 +166,13 @@ The application has been successfully built and executed locally using Docker De
 
 The Docker image was successfully created using the project's Dockerfile.
 
-![Docker Image](docs/screenshots/docker-image.png)
+![Docker Image](docs/docker-image.png)
 
 ### Running Container
 
 The container executes the FastAPI application and exposes port 8000.
 
-![Docker Container](docs/screenshots/docker-container.png)
+![Docker Container](docs/docker-container.png)
 
 ### API Demonstration
 
@@ -180,7 +180,7 @@ The application generates QR codes through its REST API.
 
 The following screenshot shows a successful HTTP 200 response and the generated PNG image using Swagger UI.
 
-![QR Code Generation](docs/screenshots/qr-generation.png)
+![QR Code Generation](docs/qr-generation.png)
 
 ## Automated Testing
 
