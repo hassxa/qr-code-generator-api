@@ -1,10 +1,10 @@
 # QR Code Generator API
 
-A lightweight, stateless REST API built with **Python**, **FastAPI**, and **Docker** that generates customizable QR codes from text or URLs.
+A lightweight, stateless REST API built with **Python 3.12**, **FastAPI**, and **Docker** that generates customizable QR codes from text or URLs.
 
-This project demonstrates REST API development, Docker containerization, automated testing, and container deployment on Amazon Web Services (AWS).
+This project demonstrates REST API development, Docker containerization, automated testing, and container deployment on **Amazon Web Services (AWS)**.
 
-> **Project Status:** Successfully developed, containerized, and deployed on AWS ECS Fargate. The deployment was verified and subsequently stopped to minimize cloud costs.
+> **Project Status:** Successfully developed, containerized, tested, and deployed on AWS ECS using AWS Fargate. The deployment was verified and subsequently stopped to minimize cloud costs.
 
 ## Tech Stack
 
@@ -19,6 +19,7 @@ This project demonstrates REST API development, Docker containerization, automat
 | Amazon ECR | Container image registry |
 | Amazon ECS | Container orchestration |
 | AWS Fargate | Serverless container execution |
+| Amazon VPC | Cloud networking |
 | Amazon CloudWatch | Application logging and monitoring |
 
 ## Features
@@ -33,6 +34,8 @@ This project demonstrates REST API development, Docker containerization, automat
 - Containerized execution using Docker.
 - Deployment on AWS ECS using Fargate.
 - Centralized application logging with Amazon CloudWatch.
+
+---
 
 ## API Endpoints
 
@@ -60,45 +63,56 @@ The API returns a PNG image containing the generated QR code.
 
 All QR codes are generated in memory. No user data is stored.
 
-## Architecture
+---
 
-The application follows a container-based architecture deployed on AWS.
+## AWS Architecture
 
-```mermaid
-flowchart TD
-    A["Python + FastAPI"] --> B["Docker Image"]
-    B --> C["Amazon ECR"]
-    C --> D["Amazon ECS"]
-    D --> E["AWS Fargate"]
-    E --> F["REST API"]
-    E --> G["Amazon CloudWatch Logs"]
-```
+The application follows a container-based architecture deployed on Amazon Web Services using Docker, Amazon ECR, Amazon ECS, and AWS Fargate.
 
-### Architecture Components
+### Architecture Diagram
 
-**FastAPI**
+![QR Code Generator API - AWS Architecture](docs/aws-architecture.png)
 
-Provides REST endpoints for generating QR codes and checking application health.
+### Architecture Overview
 
-**Docker**
+The architecture includes the following components:
 
-Packages the application and its dependencies into a portable container image.
+| Component | Description |
+|-----------|-------------|
+| Python & FastAPI | REST API responsible for generating QR codes |
+| Docker | Packages the application and its dependencies into a container image |
+| Amazon ECR | Stores the Docker image in a private container registry |
+| Amazon ECS | Manages container task definitions and execution |
+| AWS Fargate | Runs containers without managing EC2 instances |
+| Amazon VPC | Provides the networking environment |
+| Public Subnet | Hosts the network interface used by the Fargate task |
+| Security Group | Controls inbound traffic on TCP port 8000 |
+| Amazon CloudWatch | Collects application logs and HTTP request information |
 
-**Amazon ECR**
+### Deployment Workflow
 
-Stores the Docker image in a private AWS container registry.
+1. The FastAPI application is developed and tested locally.
+2. Docker builds a container image containing the application and its dependencies.
+3. The Docker image is tagged and pushed to Amazon ECR.
+4. An Amazon ECS task definition references the image stored in ECR.
+5. AWS Fargate launches the container within an Amazon VPC.
+6. The Fargate task retrieves the Docker image from Amazon ECR.
+7. The application becomes accessible through a public IPv4 address on port 8000.
+8. Amazon CloudWatch collects application logs.
 
-**Amazon ECS**
+### Architecture Highlights
 
-Manages the container deployment using a task definition and cluster.
+- Containerized REST API using Docker.
+- Private container image storage with Amazon ECR.
+- Serverless container execution using AWS Fargate.
+- Container orchestration through Amazon ECS.
+- Networking configuration using Amazon VPC and Security Groups.
+- Centralized application logging with Amazon CloudWatch.
+- Temporary cloud deployment to minimize infrastructure costs.
 
-**AWS Fargate**
+> **Deployment Status:** The application was successfully deployed and validated on AWS. The ECS task was stopped after testing to avoid unnecessary compute charges.
 
-Provides the compute resources required to execute the container without managing EC2 instances.
-
-**Amazon CloudWatch**
-
-Collects application logs, including server startup events and HTTP requests.
+---
 
 ## Local Development
 
@@ -141,6 +155,8 @@ Access the interactive documentation:
 
 http://localhost:8000/docs
 
+---
+
 ## Docker Deployment
 
 The application is containerized using Docker, allowing consistent execution across development and cloud environments.
@@ -150,6 +166,8 @@ The application is containerized using Docker, allowing consistent execution acr
 ```bash
 docker build -t qr-code-generator-api:1.0 .
 ```
+
+This command builds the Docker image using the instructions defined in the project's Dockerfile.
 
 ### 2. Verify the Image
 
@@ -200,6 +218,8 @@ The Docker configuration includes:
 - `.dockerignore` to exclude unnecessary files.
 - Stateless container architecture.
 
+---
+
 ## Docker Demonstration
 
 The application was successfully built and executed locally using Docker Desktop.
@@ -224,6 +244,8 @@ The following screenshot shows a successful HTTP 200 response and the generated 
 
 ![QR Code Generation](docs/qr-generation.png)
 
+---
+
 ## Automated Testing
 
 The project includes automated tests using **Pytest** and FastAPI's TestClient.
@@ -243,13 +265,15 @@ Run the tests using:
 pytest -q
 ```
 
+---
+
 ## AWS Deployment
 
 The application was successfully deployed on Amazon Web Services using Amazon ECS and AWS Fargate.
 
-**AWS Region:** Europe (Spain) – `eu-south-2`
+**AWS Region:** Europe (Spain) — `eu-south-2`
 
-### 1. Amazon ECR – Container Registry
+### 1. Amazon ECR — Container Registry
 
 The Docker image was pushed to Amazon Elastic Container Registry.
 
@@ -270,9 +294,11 @@ The image publication workflow included:
 
 #### Amazon ECR Evidence
 
+The following screenshot shows the container image successfully published to Amazon ECR.
+
 ![Amazon ECR Repository](docs/ecr-image.png)
 
-### 2. Amazon ECS – Container Orchestration
+### 2. Amazon ECS — Container Orchestration
 
 An Amazon ECS cluster was created to manage the application deployment.
 
@@ -291,15 +317,17 @@ An Amazon ECS cluster was created to manage the application deployment.
 - **CPU:** 0.25 vCPU
 - **Memory:** 0.5 GB
 - **Container Port:** 8000
-- **Network Mode:** awsvpc
+- **Network Mode:** `awsvpc`
 
 A standalone ECS task was launched using AWS Fargate.
 
-The task successfully pulled the container image from Amazon ECR and started the FastAPI application.
+The task successfully retrieved the container image from Amazon ECR and started the FastAPI application.
+
+AWS Fargate eliminates the need to provision, configure, or manage EC2 instances.
 
 #### ECS Deployment Evidence
 
-The following screenshot confirms that the ECS task reached the RUNNING state.
+The following screenshot confirms that the ECS task reached the `RUNNING` state.
 
 ![ECS Running Task](docs/ecs-running-task.png)
 
@@ -309,15 +337,15 @@ The application was temporarily exposed through a public IPv4 address assigned t
 
 Network connectivity was configured using:
 
-- Amazon VPC
-- Public subnet
-- Public IPv4 address
-- Security Group
-- TCP port 8000
+- Amazon VPC.
+- Public subnet.
+- Public IPv4 address.
+- Security Group.
+- TCP port 8000.
 
 The deployed application was successfully accessed through its public endpoint.
 
-The API documentation and QR code generation functionality were verified.
+Both the Swagger UI documentation and QR code generation functionality were verified.
 
 **Validation Results:**
 
@@ -325,12 +353,15 @@ The API documentation and QR code generation functionality were verified.
 - Swagger UI was accessible.
 - QR code generation returned HTTP 200.
 - PNG images were generated correctly.
+- Health check endpoint responded successfully.
 
 #### AWS API Demonstration
 
+The following screenshot shows the API running on AWS Fargate and successfully generating a QR code.
+
 ![AWS API Demonstration](docs/aws-api-demo.png)
 
-### 4. Amazon CloudWatch – Application Logging
+### 4. Amazon CloudWatch — Application Logging
 
 Application logs were collected using Amazon CloudWatch Logs.
 
@@ -352,6 +383,8 @@ GET /qr        200 OK
 
 #### CloudWatch Logs Evidence
 
+The following screenshot shows the application logs collected during the AWS deployment.
+
 ![CloudWatch Logs](docs/cloudwatch-logs.png)
 
 ### 5. Resource Cleanup and Cost Management
@@ -361,37 +394,79 @@ The application was deployed temporarily for testing and portfolio demonstration
 After validating the deployment:
 
 - The standalone ECS task was stopped.
-- Fargate compute consumption was terminated.
-- Public access was disabled after testing.
+- Fargate compute consumption for the task was terminated.
+- The temporary public endpoint became unavailable.
 - The Amazon ECR repository and ECS configuration were retained for future use.
 
-**Note:** The public API endpoint is not permanently available. The application can be redeployed using the existing container image and ECS task definition.
+This approach allowed the deployment to be validated without keeping the application continuously running.
+
+> **Note:** The public API endpoint is not permanently available. The application can be redeployed using the existing container image and ECS task definition. Retained AWS resources may still generate charges depending on their configuration.
+
+### 6. Security Considerations
+
+The deployment was designed as a temporary technical demonstration.
+
+The application was accessed directly through a public IPv4 address using HTTP on port 8000.
+
+For a production environment, additional security measures would be recommended:
+
+- HTTPS using AWS Certificate Manager.
+- Application Load Balancer for secure public access.
+- Restrictive Security Group rules.
+- Private subnets for application containers.
+- Automated security and vulnerability scanning.
+
+These improvements were intentionally excluded from the initial deployment to keep the architecture simple and minimize infrastructure costs.
+
+---
 
 ## Key Technical Skills Demonstrated
 
 This project demonstrates practical experience with:
 
+### Backend Development
+
 - Python REST API development.
 - FastAPI and OpenAPI documentation.
-- Docker image creation and container execution.
-- Dockerfile optimization and container security.
+- Input validation.
+- PNG response generation.
+- Automated testing using Pytest.
+
+### Docker
+
+- Dockerfile creation.
+- Docker image building and tagging.
+- Local container execution.
+- Docker port mapping.
+- Container health checks.
+- Docker layer caching.
+- Non-root container execution.
+
+### AWS Cloud
+
 - AWS CLI authentication and configuration.
 - Amazon ECR image management.
 - Amazon ECS cluster and task configuration.
 - AWS Fargate container deployment.
 - IAM task execution roles.
-- VPC networking and Security Groups.
+- Amazon VPC networking.
+- Security Group configuration.
 - Amazon CloudWatch application logging.
 - Cloud resource lifecycle and cost management.
 
+---
+
 ## Future Improvements
 
+Potential improvements include:
+
 - Implement Infrastructure as Code using Terraform.
-- Deploy the application locally using Kubernetes.
 - Configure a CI/CD pipeline using GitHub Actions.
 - Automate Docker image builds and deployment workflows.
 - Implement HTTPS using an Application Load Balancer and AWS Certificate Manager.
 - Add automated deployment validation.
+
+---
 
 ## License
 
